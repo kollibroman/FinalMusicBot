@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "G5oYL5B54NJvy1+/clKldaDfiDA84+SlpBitz/VRFVH5uu2gE49fZyUlOBc1uzbIGpQgU9jFeKHiU0PzI91gZg==",
+  "dgSpecHash": "+lQd8XmbvHQq9qIofv2s8FDXDgFZm4EeGFuUegE2YKJEtca0DjfQPZdjfYk345FLXLDISJOKltnFkxfrRiu8Vg==",
   "success": true,
   "projectFilePath": "/home/kollibroman/losoweProjekty/FinalMusicBot/FinalMusicBot.csproj",
   "expectedPackageFiles": [
@@ -44,6 +44,7 @@
     "/home/kollibroman/.nuget/packages/serilog.extensions.hosting/4.2.0/serilog.extensions.hosting.4.2.0.nupkg.sha512",
     "/home/kollibroman/.nuget/packages/serilog.extensions.logging/3.1.0/serilog.extensions.logging.3.1.0.nupkg.sha512",
     "/home/kollibroman/.nuget/packages/serilog.settings.configuration/3.3.0/serilog.settings.configuration.3.3.0.nupkg.sha512",
+    "/home/kollibroman/.nuget/packages/serilog.sinks.console/4.0.1/serilog.sinks.console.4.0.1.nupkg.sha512",
     "/home/kollibroman/.nuget/packages/system.collections.immutable/5.0.0/system.collections.immutable.5.0.0.nupkg.sha512",
     "/home/kollibroman/.nuget/packages/system.diagnostics.diagnosticsource/6.0.0/system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
     "/home/kollibroman/.nuget/packages/system.diagnostics.eventlog/6.0.0/system.diagnostics.eventlog.6.0.0.nupkg.sha512",
