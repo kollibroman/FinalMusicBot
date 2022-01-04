@@ -53,6 +53,7 @@
                         x.LogSeverity = Discord.LogSeverity.Debug;
                     });
                     services.AddSingleton<InteractiveService>();
+                    services.AddSingleton<IUtils, Utils>();
                 })
                 .UseSerilog()
                 .UseConsoleLifetime();
