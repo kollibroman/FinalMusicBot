@@ -40,33 +40,44 @@ namespace FinalMusicBot.Modules
             }
         }
 
-        [Command("Play")]
+        [Command("play", RunMode = RunMode.Async), Alias("p")]
         public async Task PlayAsync([Remainder] string searchQuery)
         {
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
-                await ReplyAsync("Please provide search terms.");
+                var embed = _utils.BuildEmbed("Gib me da title retard!", null);
+                await ReplyAsync(embed: embed);
                 return;
             }
 
             if (!_node.HasPlayer(Context.Guild))
             {
-                await ReplyAsync("I'm not connected to a voice channel.");
+                var embed = _utils.BuildEmbed("LET ME IN DA VOICE CHANNEL YUO MORON!", null);
+                await ReplyAsync(embed: embed);
                 return;
             }
 
             var queries = searchQuery.Split(' ');
             foreach (var query in queries)
             {
-                var searchResponse = await _node.SearchAsync(SearchType.Direct, query);
-                if(!queries.Contains("https"))
+                var searchResponse = await _node.SearchAsync(SearchType.YouTubeMusic, query);
+
+                if (query.Contains("https"))
                 {
-                    await _node.SearchAsync(SearchType.YouTube, query);
+                    searchResponse = await _node.SearchAsync(SearchType.Direct, query);
                 }
+
+                else
+                {
+                    searchResponse = await _node.SearchYouTubeAsync(query);
+                }
+
+
                 if (searchResponse.Status == SearchStatus.LoadFailed ||
                     searchResponse.Status == SearchStatus.NoMatches)
                 {
-                    await ReplyAsync($"I wasn't able to find anything for `{query}`.");
+                    var em = _utils.BuildEmbed("Sumimasen master pero no consejos encotro", query, true);
+                    await ReplyAsync(embed: em);
                     return;
                 }
 
@@ -74,31 +85,56 @@ namespace FinalMusicBot.Modules
 
                 if (player.PlayerState == PlayerState.Playing || player.PlayerState == PlayerState.Paused)
                 {
-                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name) && queries.Contains("playlist"))
+                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name) && query.Contains("https"))
                     {
                         foreach (var track in searchResponse.Tracks)
                         {
                             player.Queue.Enqueue(track);
                         }
 
-                        var b = _utils.BuildEmbed($"Enqueued {searchResponse.Tracks.Count} tracks.", "");
-                        await ReplyAsync();
+                        var emb = _utils.BuildEmbed("Enqueued:", $"{searchResponse.Tracks.Count} tracks", true);
+                        await ReplyAsync(embed: emb);
                     }
                     else
                     {
                         var track = searchResponse.Tracks.ElementAt(0);
                         player.Queue.Enqueue(track);
-                        await ReplyAsync($"Enqueued: {track.Title}");
+                        var embeded = _utils.BuildEmbed("Enqueued:", track.Title, true);
+                        await ReplyAsync(embed: embeded);
                     }
                 }
                 else
                 {
                     var track = searchResponse.Tracks.ElementAt(0);
+
+                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name) && query.Contains("https"))
+                    {
+                        for (var i = 0; i < searchResponse.Tracks.Count; i++)
+                        {
+                            if (i == 0)
+                            {
+                                await player.PlayAsync(track);
+
+                                var Embed = _utils.BuildEmbed("Now Playing", track.Title);
+                                await ReplyAsync(embed: Embed);
+                            }
+                            else
+                            {
+                                player.Queue.Enqueue(searchResponse.Tracks.ElementAt(i));
+                            }
+                        }
+
+                        var embed = _utils.BuildEmbed($"Enqueued {searchResponse.Tracks.Count} tracks", null);
+                        await ReplyAsync(embed: embed);
+                    }
+                    else
+                    {
                         await player.PlayAsync(track);
-                        await ReplyAsync($"Now Playing: {track.Title}");
+                        var eb = _utils.BuildEmbed("**Now playing:**", track.Title, true);
+                        await ReplyAsync(embed: eb);
+                    }
                 }
             }
-
             _node.OnTrackEnded += OnTrackEnded;
             _node.OnTrackStuck += OnTrackStuck;
             _node.OnTrackException += OnTrackException;
@@ -127,9 +163,37 @@ namespace FinalMusicBot.Modules
             }
         }
 
+        [Command("skip")]
+        private async Task Skip()
+        {
+            var voiceState = Context.User as IVoiceState;
+            if (voiceState?.VoiceChannel == null)
+            {
+                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                await ReplyAsync(embed: e);
+                return;
+            }
+
+            try
+            {
+                var player = _node.GetPlayer(Context.Guild);
+                await player.SkipAsync();
+                var builder = _utils.BuildEmbed("**Skipping**", $"Skipped :3");
+                await ReplyAsync(embed: builder);
+            }
+            catch (Exception exception)
+            {
+                await ReplyAsync(exception.Message);
+            }
+        }
+
         //Events
         private async Task OnTrackEnded(TrackEndedEventArgs args)
         {
+            if(args.Reason.ShouldPlayNext())
+            {
+                return;
+            }
             var player = args.Player;
             if (!player.Queue.TryDequeue(out var queueable))
             {

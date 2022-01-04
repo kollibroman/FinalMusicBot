@@ -26,3 +26,4 @@ global using Victoria.EventArgs;
 global using FinalMusicBot;
 global using FinalMusicBot.Services;
 global using FinalMusicBot.Modules;
+global using FinalMusicBot.Useful;

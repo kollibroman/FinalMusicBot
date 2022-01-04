@@ -1,4 +1,4 @@
-namespace FinalMusicBot
+namespace FinalMusicBot.Useful
 {
     public interface IUtils
     {
