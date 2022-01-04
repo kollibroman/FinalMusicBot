@@ -7,11 +7,11 @@ Basic:
     ✔ all @done (1/4/2022, 9:16:05 AM)
 Music commands:
     ☐ Search
-    ☐ stop
     ✔ play @done (1/4/2022, 12:49:57 PM)
     ☐ queue
     ✔ skip @done (1/4/2022, 2:47:36 PM)
     ☐ stop
+    ☐ pause
     ☐ resume
     ✔ events @done (1/4/2022, 12:49:55 PM)
     ✔ disconnect @done (1/4/2022, 12:27:01 PM)

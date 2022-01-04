@@ -187,6 +187,56 @@ namespace FinalMusicBot.Modules
             }
         }
 
+        [Command("Pause")]
+        private async Task Pause()
+        {
+            var voiceState = Context.User as IVoiceState;
+            if (voiceState?.VoiceChannel == null)
+            {
+                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                await ReplyAsync(embed: e);
+                return;
+            }
+
+            try
+            {
+                var player = _node.GetPlayer(Context.Guild);
+                await player.PauseAsync();
+                var builder = _utils.BuildEmbed("**Pausing**", $"Paused :3");
+                await ReplyAsync(embed: builder);
+            }
+            catch (Exception exception)
+            {
+                var emdeb = _utils.BuildEmbed("**OH NO**", exception.Message);
+                await ReplyAsync(embed:emdeb);
+            }
+        }
+
+        [Command("stop")]
+        private async Task Stop()
+        {
+            var voiceState = Context.User as IVoiceState;
+            if (voiceState?.VoiceChannel == null)
+            {
+                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                await ReplyAsync(embed: e);
+                return;
+            }
+
+            try
+            {
+                var player = _node.GetPlayer(Context.Guild);
+                await player.StopAsync();
+                var builder = _utils.BuildEmbed("**Stopping**", $"Stopped :3");
+                await ReplyAsync(embed: builder);
+            }
+            catch (Exception exception)
+            {
+                var emdeb = _utils.BuildEmbed("**OH NO**", exception.Message);
+                await ReplyAsync(embed: emdeb);
+            }
+        }
+
         //Events
         private async Task OnTrackEnded(TrackEndedEventArgs args)
         {
