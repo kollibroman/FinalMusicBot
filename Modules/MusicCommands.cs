@@ -11,7 +11,7 @@ namespace FinalMusicBot.Modules
         }
 
         [Command("join")]
-        private async Task Join()
+        private async Task JoinAsync()
         {
             if(_node.HasPlayer(Context.Guild))
             {
@@ -141,7 +141,7 @@ namespace FinalMusicBot.Modules
         }
 
         [Command("leave"), Alias("fuckoff")]
-        private async Task Leave()
+        private async Task LeaveAsync()
         {
             var voiceState = Context.User as IVoiceState;
             if (voiceState?.VoiceChannel == null)
@@ -164,13 +164,20 @@ namespace FinalMusicBot.Modules
         }
 
         [Command("skip")]
-        private async Task Skip()
+        private async Task SkipAsync()
         {
             var voiceState = Context.User as IVoiceState;
             if (voiceState?.VoiceChannel == null)
             {
                 var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
                 await ReplyAsync(embed: e);
+                return;
+            }
+
+            if (!_node.HasPlayer(Context.Guild))
+            {
+                var builder = _utils.BuildEmbed("**NONONO**", "First play something");
+                await ReplyAsync(embed: builder);
                 return;
             }
 
@@ -188,13 +195,20 @@ namespace FinalMusicBot.Modules
         }
 
         [Command("Pause")]
-        private async Task Pause()
+        private async Task PauseAsync()
         {
             var voiceState = Context.User as IVoiceState;
             if (voiceState?.VoiceChannel == null)
             {
                 var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
                 await ReplyAsync(embed: e);
+                return;
+            }
+
+            if (!_node.HasPlayer(Context.Guild))
+            {
+                var builder = _utils.BuildEmbed("**NONONO**", "First play something");
+                await ReplyAsync(embed: builder);
                 return;
             }
 
@@ -213,13 +227,20 @@ namespace FinalMusicBot.Modules
         }
 
         [Command("stop")]
-        private async Task Stop()
+        private async Task StopAsync()
         {
             var voiceState = Context.User as IVoiceState;
             if (voiceState?.VoiceChannel == null)
             {
                 var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
                 await ReplyAsync(embed: e);
+                return;
+            }
+
+            if (!_node.HasPlayer(Context.Guild))
+            {
+                var builder = _utils.BuildEmbed("**NONONO**", "First play something");
+                await ReplyAsync(embed: builder);
                 return;
             }
 
@@ -235,6 +256,76 @@ namespace FinalMusicBot.Modules
                 var emdeb = _utils.BuildEmbed("**OH NO**", exception.Message);
                 await ReplyAsync(embed: emdeb);
             }
+
+        }
+
+        [Command("resume")]
+        private async Task ResumeAsync()
+        {
+            var voiceState = Context.User as IVoiceState;
+            if (voiceState?.VoiceChannel == null)
+            {
+                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                await ReplyAsync(embed: e);
+                return;
+            }
+
+            if(!_node.HasPlayer(Context.Guild))
+            {
+                var builder =_utils.BuildEmbed("**NONONO**", "First play something");
+                await ReplyAsync(embed:builder);
+                return;
+            }
+
+            try
+            {
+                var player = _node.GetPlayer(Context.Guild);
+                await player.ResumeAsync();
+                var builder = _utils.BuildEmbed("**Resuming**", $"Resumed :3");
+                await ReplyAsync(embed: builder);
+            }
+            catch (Exception exception)
+            {
+                var emdeb = _utils.BuildEmbed("**OH NO**", exception.Message);
+                await ReplyAsync(embed: emdeb);
+            }
+        }
+
+        [Command("queue"), Alias("q")]
+        private async Task ShowQueueAsync()
+        {
+            var voiceState = Context.User as IVoiceState;
+            if (voiceState?.VoiceChannel == null)
+            {
+                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                await ReplyAsync(embed: e);
+                return;
+            }
+
+            if (!_node.HasPlayer(Context.Guild))
+            {
+                var builder = _utils.BuildEmbed("**NONONO**", "First play something");
+                await ReplyAsync(embed: builder);
+                return;
+            }
+
+            var player = _node.GetPlayer(Context.Guild);
+            List<string> QueueList = new();
+            int i = 0;
+            foreach (var item in player.Queue)
+            {
+                i++;
+                QueueList.Add(i.ToString() + item.Title);
+            }
+            string[] QueueArray = QueueList.ToArray();
+            string Queue = String.Join(" \n", QueueArray);
+            var paged = new PaginatedMessage
+            {
+                Color = new Color(255, 255, 255),
+                Title = "Current Queue:",
+                Pages = Queue.Split("\n", QueueList.Count / 10),
+            };
+            await PagedReplyAsync(paged);
         }
 
         //Events
