@@ -166,31 +166,22 @@ namespace FinalMusicBot.Modules
         [Command("skip")]
         private async Task SkipAsync()
         {
+            var player = _node.GetPlayer(Context.Guild);
+
             var voiceState = Context.User as IVoiceState;
+
             if (voiceState?.VoiceChannel == null)
             {
-                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
-                await ReplyAsync(embed: e);
+                var embed = _utils.BuildEmbed("**Error:**", "Ur not Connected to channel, fuck off");
+                await ReplyAsync(embed: embed);
                 return;
             }
 
-            if (!_node.HasPlayer(Context.Guild))
+            else
             {
-                var builder = _utils.BuildEmbed("**NONONO**", "First play something");
-                await ReplyAsync(embed: builder);
-                return;
-            }
-
-            try
-            {
-                var player = _node.GetPlayer(Context.Guild);
+                var embed = _utils.BuildEmbed("**Skipping**", "Skipped :3");
+                await ReplyAsync(embed: embed);
                 await player.SkipAsync();
-                var builder = _utils.BuildEmbed("**Skipping**", $"Skipped :3");
-                await ReplyAsync(embed: builder);
-            }
-            catch (Exception exception)
-            {
-                await ReplyAsync(exception.Message);
             }
         }
 
@@ -328,10 +319,34 @@ namespace FinalMusicBot.Modules
             await PagedReplyAsync(paged);
         }
 
+        [Command("shuffle")]
+        private async Task Shuffle()
+        {
+            var player = _node.GetPlayer(Context.Guild);
+
+            var voiceState = Context.User as IVoiceState;
+
+            if (voiceState?.VoiceChannel == null)
+            {
+                var embed = _utils.BuildEmbed("**No Shuffling**", "You aren't on vc channel");
+                await ReplyAsync(embed: embed);
+                return;
+            }
+
+            else
+            {
+                player.Queue.Shuffle();
+
+                var embed = _utils.BuildEmbed("**Shuffling**", "Shuffled queue :3");
+                await ReplyAsync(embed: embed);
+                return;
+            }
+        }
+
         //Events
         private async Task OnTrackEnded(TrackEndedEventArgs args)
         {
-            if(args.Reason.ShouldPlayNext())
+            if(!args.Reason.ShouldPlayNext())
             {
                 return;
             }

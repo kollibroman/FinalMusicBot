@@ -16,7 +16,8 @@ Music commands:
     ✔ events @done (1/4/2022, 12:49:55 PM)
     ✔ disconnect @done (1/4/2022, 12:27:01 PM)
     ✔ join @done (1/4/2022, 12:05:52 PM)
+    ✔ shuffle @done (1/5/2022, 12:24:19 PM)
 Bugs to resolve:
     ☐ Autoplay skips to much
-    ☐ 
-    ☐ 
+    ☐ Play takes just on piece of largegr string
+    ☐ Skip skips too much
