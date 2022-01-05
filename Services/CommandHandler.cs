@@ -7,13 +7,15 @@ namespace FinalMusicBot.Services
         private readonly CommandService _service;
         private readonly IConfiguration _config;
         private readonly LavaNode _node;
-        public CommandHandler(IConfiguration config, LavaNode node, CommandService service, DiscordSocketClient client, IServiceProvider provider)
+        private readonly IUtils _utils;
+        public CommandHandler(IConfiguration config, LavaNode node, CommandService service, DiscordSocketClient client, IServiceProvider provider, IUtils utils)
         {
             _provider = provider;
             _client = client;
             _service = service;
             _config = config;
             _node = node;
+            _utils = utils;
         }
 
         public async Task StartAsync(CancellationToken cancellationtoken)
@@ -42,11 +44,7 @@ namespace FinalMusicBot.Services
 
         private async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
-            var embed = new EmbedBuilder()
-                .WithColor(new Color(255, 255, 255))
-                .AddField("This is not how ya dew it broo!", result)
-                .Build();
-
+            var embed = _utils.BuildEmbed("This is not how ya dew it broo!", result);
             if (command.IsSpecified && !result.IsSuccess) await context.Channel.SendMessageAsync(embed: embed);
         }
 

@@ -7,5 +7,6 @@ namespace FinalMusicBot.Useful
         public Embed BuildEmbed(SocketUser author, Color color, string title, object Content);
         public Embed BuildEmbed(SocketUser author, string title, object Content);
         public Embed BuildEmbed(SocketUser author, Color color, string title, object content, EmbedFooterBuilder footer);
+        public IEnumerable<List<T>> SplitList<T>(List<T> locations, int nSize);
     }
 }

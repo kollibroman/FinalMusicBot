@@ -19,12 +19,12 @@ Music commands:
     ✔ shuffle @done (1/5/2022, 12:24:19 PM)
 Bugs to resolve:
     ✔ Autoplay skips to much @done (1/5/2022, 1:57:51 PM)
-    ☐ Play takes just on piece of largegr string
+    ✔ Play takes just on piece of largegr string @done (1/5/2022, 10:39:27 PM)
     ✔ Skip skips too much @done (1/5/2022, 1:57:43 PM)
-    ☐ Stop does not purge queue
-    ☐ Queue has as much pages as much is elemnts
+    ✔ Stop does not purge queue @done (1/5/2022, 9:00:44 PM)
+    ✔ Queue has as much pages as much is elemnts @done (1/5/2022, 10:32:25 PM)
 Another Things:
-    ☐ Do the proper paging
+    ✔ Do the proper paging @done (1/5/2022, 10:32:16 PM)
     ☐ 
 Future Development:
     ☐ Add spotify support

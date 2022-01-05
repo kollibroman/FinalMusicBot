@@ -10,7 +10,7 @@ namespace FinalMusicBot.Modules
             _utils = utils;
         }
 
-        [Command("join")]
+        [Command("join"), Alias("")]
         private async Task JoinAsync()
         {
             if(_node.HasPlayer(Context.Guild))
@@ -57,26 +57,25 @@ namespace FinalMusicBot.Modules
                 return;
             }
 
-            var queries = searchQuery.Split(' ');
-            foreach (var query in queries)
-            {
-                var searchResponse = await _node.SearchAsync(SearchType.YouTubeMusic, query);
+                // var queries = searchQuery.Split(' ');
+           
+                var searchResponse = await _node.SearchAsync(SearchType.YouTubeMusic, searchQuery);
 
-                if (query.Contains("https"))
+                if (searchQuery.Contains("https"))
                 {
-                    searchResponse = await _node.SearchAsync(SearchType.Direct, query);
+                    searchResponse = await _node.SearchAsync(SearchType.Direct, searchQuery);
                 }
 
                 else
                 {
-                    searchResponse = await _node.SearchYouTubeAsync(query);
+                    searchResponse = await _node.SearchYouTubeAsync(searchQuery);
                 }
 
 
                 if (searchResponse.Status == SearchStatus.LoadFailed ||
                     searchResponse.Status == SearchStatus.NoMatches)
                 {
-                    var em = _utils.BuildEmbed("Sumimasen master pero no consejos encotro", query, true);
+                    var em = _utils.BuildEmbed("Sumimasen master pero no consejos encotro", searchQuery, true);
                     await ReplyAsync(embed: em);
                     return;
                 }
@@ -85,7 +84,7 @@ namespace FinalMusicBot.Modules
 
                 if (player.PlayerState == PlayerState.Playing || player.PlayerState == PlayerState.Paused)
                 {
-                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name) && query.Contains("https"))
+                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name) && searchQuery.Contains("https"))
                     {
                         foreach (var track in searchResponse.Tracks)
                         {
@@ -107,7 +106,7 @@ namespace FinalMusicBot.Modules
                 {
                     var track = searchResponse.Tracks.ElementAt(0);
 
-                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name) && query.Contains("https"))
+                    if (!string.IsNullOrWhiteSpace(searchResponse.Playlist.Name) && searchQuery.Contains("https"))
                     {
                         for (var i = 0; i < searchResponse.Tracks.Count; i++)
                         {
@@ -134,13 +133,13 @@ namespace FinalMusicBot.Modules
                         await ReplyAsync(embed: eb);
                     }
                 }
-            }
+            
             _node.OnTrackEnded += OnTrackEnded;
             _node.OnTrackStuck += OnTrackStuck;
             _node.OnTrackException += OnTrackException;
         }
 
-        [Command("leave"), Alias("fuckoff")]
+        [Command("leave"), Alias("fuckoff", "fuck off")]
         private async Task LeaveAsync()
         {
             var voiceState = Context.User as IVoiceState;
@@ -163,7 +162,7 @@ namespace FinalMusicBot.Modules
             }
         }
 
-        [Command("skip")]
+        [Command("skip"), Alias("s")]
         private async Task SkipAsync()
         {
             var player = _node.GetPlayer(Context.Guild);
@@ -185,7 +184,7 @@ namespace FinalMusicBot.Modules
             }
         }
 
-        [Command("Pause")]
+        [Command("pause")]
         private async Task PauseAsync()
         {
             var voiceState = Context.User as IVoiceState;
@@ -238,9 +237,10 @@ namespace FinalMusicBot.Modules
             try
             {
                 var player = _node.GetPlayer(Context.Guild);
-                await player.StopAsync();
                 var builder = _utils.BuildEmbed("**Stopping**", $"Stopped :3");
                 await ReplyAsync(embed: builder);
+                await player.StopAsync();
+                player.Queue.Clear();
             }
             catch (Exception exception)
             {
@@ -314,7 +314,7 @@ namespace FinalMusicBot.Modules
             {
                 Color = new Color(255, 255, 255),
                 Title = "Current Queue:",
-                Pages = Queue.Split("\n", QueueList.Count / 10),
+                Pages = _utils.SplitList<string>(QueueList, 10)
             };
             await PagedReplyAsync(paged);
         }
