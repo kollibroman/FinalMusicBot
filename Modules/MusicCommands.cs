@@ -15,7 +15,7 @@ namespace FinalMusicBot.Modules
         {
             if(_node.HasPlayer(Context.Guild))
             {
-                var emb = _utils.BuildEmbed("No No No", "Me already connected");
+                var emb = _utils.BuildEmbed("**No No No**", "Me already connected");
                 await ReplyAsync(embed: emb);
                 return;
             }
@@ -23,7 +23,7 @@ namespace FinalMusicBot.Modules
             var voiceState = Context.User as IVoiceState;
             if(voiceState?.VoiceChannel == null)
             {
-                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                var e = _utils.BuildEmbed("**No No No**", "Connect to the vc channel first");
                 await ReplyAsync(embed: e);
                 return;
             }
@@ -45,14 +45,14 @@ namespace FinalMusicBot.Modules
         {
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
-                var embed = _utils.BuildEmbed("Gib me da title retard!", null);
+                var embed = _utils.BuildEmbed("**Gib me da title retard!**", null);
                 await ReplyAsync(embed: embed);
                 return;
             }
 
             if (!_node.HasPlayer(Context.Guild))
             {
-                var embed = _utils.BuildEmbed("LET ME IN DA VOICE CHANNEL YUO MORON!", null);
+                var embed = _utils.BuildEmbed("**LET ME IN DA VOICE CHANNEL YUO MORON!**", null);
                 await ReplyAsync(embed: embed);
                 return;
             }
@@ -92,14 +92,14 @@ namespace FinalMusicBot.Modules
                             player.Queue.Enqueue(track);
                         }
 
-                        var emb = _utils.BuildEmbed("Enqueued:", $"{searchResponse.Tracks.Count} tracks", true);
+                        var emb = _utils.BuildEmbed("**Enqueued:**", $"{searchResponse.Tracks.Count} tracks", true);
                         await ReplyAsync(embed: emb);
                     }
                     else
                     {
                         var track = searchResponse.Tracks.ElementAt(0);
                         player.Queue.Enqueue(track);
-                        var embeded = _utils.BuildEmbed("Enqueued:", track.Title, true);
+                        var embeded = _utils.BuildEmbed("**Enqueued:**", track.Title, true);
                         await ReplyAsync(embed: embeded);
                     }
                 }
@@ -146,7 +146,7 @@ namespace FinalMusicBot.Modules
             var voiceState = Context.User as IVoiceState;
             if (voiceState?.VoiceChannel == null)
             {
-                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                var e = _utils.BuildEmbed("**No No No**", "Connect to the vc channel first");
                 await ReplyAsync(embed: e);
                 return;
             }
@@ -154,7 +154,7 @@ namespace FinalMusicBot.Modules
             try
             {
                 await _node.LeaveAsync(voiceState.VoiceChannel);
-                var builder = _utils.BuildEmbed("Uh Oh", $"Disconnected :3");
+                var builder = _utils.BuildEmbed("**Uh Oh**", $"Disconnected :3");
                 await ReplyAsync(embed: builder);
             }
             catch (Exception exception)
@@ -191,7 +191,7 @@ namespace FinalMusicBot.Modules
             var voiceState = Context.User as IVoiceState;
             if (voiceState?.VoiceChannel == null)
             {
-                var e = _utils.BuildEmbed("No No No", "Connect to the vc channel first");
+                var e = _utils.BuildEmbed("**No No No**", "Connect to the vc channel first");
                 await ReplyAsync(embed: e);
                 return;
             }
@@ -306,7 +306,7 @@ namespace FinalMusicBot.Modules
             foreach (var item in player.Queue)
             {
                 i++;
-                QueueList.Add(i.ToString() + item.Title);
+                QueueList.Add($"**{i.ToString()}.** " + item.Title);
             }
             string[] QueueArray = QueueList.ToArray();
             string Queue = String.Join(" \n", QueueArray);
@@ -353,28 +353,28 @@ namespace FinalMusicBot.Modules
             var player = args.Player;
             if (!player.Queue.TryDequeue(out var queueable))
             {
-                var e = _utils.BuildEmbed("Queue Completed", "Gib more tracks");
+                var e = _utils.BuildEmbed("**Queue Completed**", "Gib more tracks");
                 await player.TextChannel.SendMessageAsync(embed: e);
                 return;
             }
 
             if (!(queueable is LavaTrack track))
             {
-                var emb = _utils.BuildEmbed("Big nono", "Next item in queue is not a track");
+                var emb = _utils.BuildEmbed("**Big nono**", "Next item in queue is not a track");
                 await player.TextChannel.SendMessageAsync(embed: emb);
                 return;
             }
 
             await args.Player.PlayAsync(track);
-            var embed = _utils.BuildEmbed("YES", $"now playing: {track.Title}");
-            await player.TextChannel.SendMessageAsync(embed: embed);
+            var embed = _utils.BuildEmbed("YES", $"**now playing:** {track.Title}");
+            await ReplyAndDeleteAsync("", false, embed, TimeSpan.FromSeconds(5));
         }
 
         private async Task OnTrackStuck(TrackStuckEventArgs args)
         {
             var player = args.Player;
 
-            var embed = _utils.BuildEmbed("Error:", "Track got stuck, call step-player to unstuck it");
+            var embed = _utils.BuildEmbed("**Error:**", "Track got stuck, call step-player to unstuck it");
             await player.TextChannel.SendMessageAsync(embed: embed);
             await args.Player.SkipAsync();
         }
@@ -383,7 +383,7 @@ namespace FinalMusicBot.Modules
         {
             var player = args.Player;
 
-            var embed = _utils.BuildEmbed("Error:", $"{args.Exception.Message}");
+            var embed = _utils.BuildEmbed("**Error:**", $"{args.Exception.Message}");
             await player.TextChannel.SendMessageAsync(embed: embed);
             await args.Player.SkipAsync();
         }

@@ -25,8 +25,7 @@ namespace FinalMusicBot.Services
         }
         public async Task StopAsync(CancellationToken token)
         {
-            await _node.DisconnectAsync();
-            await _node.DisposeAsync();
+           await Task.CompletedTask;
         }
 
         private async Task OnMessageReceived(SocketMessage arg)
